@@ -36,7 +36,7 @@ $context = context_course::instance($course->id);
 require_login($course);
 require_capability("local/massmailenrol:enrol", $context);
 
-$PAGE->set_url(new moodle_url("/local/massmailenrol/index.php", ["id" => $course->id]));
+$PAGE->set_url(new moodle_url("/local/massmailenrol/", ["id" => $course->id]));
 $PAGE->set_context($context);
 $PAGE->set_course($course);
 $PAGE->set_title(get_string("pluginname", "local_massmailenrol"));

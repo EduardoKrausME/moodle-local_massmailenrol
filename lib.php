@@ -39,7 +39,7 @@ function local_massmailenrol_extend_navigation_course(
         return;
     }
 
-    $url = new moodle_url("/local/massmailenrol/index.php", ["id" => $course->id]);
+    $url = new moodle_url("/local/massmailenrol/", ["id" => $course->id]);
     $navigation->add(
         get_string("navigationlink", "local_massmailenrol"),
         $url,
