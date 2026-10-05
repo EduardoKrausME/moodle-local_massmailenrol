@@ -24,6 +24,11 @@
 
 namespace local_massmailenrol\form;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->libdir . "/formslib.php");
+
 use moodleform;
 
 /**
