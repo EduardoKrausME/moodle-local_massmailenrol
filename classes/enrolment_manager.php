@@ -88,6 +88,8 @@ class enrolment_manager {
     public function enrol(string $input, int $roleid): array {
         global $DB;
 
+        require_capability("enrol/manual:enrol", $this->context);
+
         $manualinstance = $this->get_manual_instance();
         if (!$manualinstance) {
             throw new \moodle_exception("manualenrolmentmissing", "local_massmailenrol");
@@ -97,12 +99,16 @@ class enrolment_manager {
         if (!$plugin) {
             throw new \moodle_exception("manualpluginmissing", "local_massmailenrol");
         }
+        if (!$plugin->allow_enrol($manualinstance)) {
+            throw new \moodle_exception("manualenrolmentnotallowed", "local_massmailenrol");
+        }
 
         $result = [
             "enrolled" => [],
             "already" => [],
             "notfound" => [],
             "invalid" => [],
+            "duplicate" => [],
             "suspended" => [],
             "failed" => [],
         ];
@@ -125,7 +131,11 @@ class enrolment_manager {
                        AND LOWER(email) {$insql}";
 
             foreach ($DB->get_records_sql($sql, $params) as $user) {
-                $usersbyemail[core_text::strtolower($user->email)] = $user;
+                $email = core_text::strtolower($user->email);
+                if (!isset($usersbyemail[$email])) {
+                    $usersbyemail[$email] = [];
+                }
+                $usersbyemail[$email][] = $user;
             }
         }
 
@@ -135,7 +145,12 @@ class enrolment_manager {
                 continue;
             }
 
-            $user = $usersbyemail[$email];
+            if (count($usersbyemail[$email]) > 1) {
+                $result["duplicate"][] = $email;
+                continue;
+            }
+
+            $user = $usersbyemail[$email][0];
             $item = $this->user_item($user);
 
             if (!empty($user->suspended)) {
@@ -148,13 +163,20 @@ class enrolment_manager {
                 continue;
             }
 
+            $timestart = 0;
+            $timeend = 0;
+            if (!empty($manualinstance->enrolperiod)) {
+                $timestart = time();
+                $timeend = $timestart + (int)$manualinstance->enrolperiod;
+            }
+
             try {
                 $plugin->enrol_user(
                     $manualinstance,
                     $user->id,
                     $roleid,
-                    0,
-                    0,
+                    $timestart,
+                    $timeend,
                     ENROL_USER_ACTIVE
                 );
                 $result["enrolled"][] = $item;
