@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $capabilities = [
     "local/massmailenrol:enrol" => [
-        "riskbitmask" => RISK_CONFIG,
+        "riskbitmask" => RISK_PERSONAL,
         "captype" => "write",
         "contextlevel" => CONTEXT_COURSE,
         "archetypes" => [
