@@ -35,7 +35,10 @@ function local_massmailenrol_extend_navigation_course(
     stdClass $course,
     context_course $context
 ): void {
-    if (!has_capability("local/massmailenrol:enrol", $context)) {
+    if (
+        !has_capability("local/massmailenrol:enrol", $context) ||
+        !has_capability("enrol/manual:enrol", $context)
+    ) {
         return;
     }
 
