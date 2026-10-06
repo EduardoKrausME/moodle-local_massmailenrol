@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2026100500;
-$plugin->release = '1.1.3';
+$plugin->version = 2026100600;
+$plugin->release = '1.1.4';
 $plugin->component = "local_massmailenrol";
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_STABLE;
