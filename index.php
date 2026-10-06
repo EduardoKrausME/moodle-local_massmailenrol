@@ -35,6 +35,7 @@ $context = context_course::instance($course->id);
 
 require_login($course);
 require_capability("local/massmailenrol:enrol", $context);
+require_capability("enrol/manual:enrol", $context);
 
 $PAGE->set_url(new moodle_url("/local/massmailenrol/", ["id" => $course->id]));
 $PAGE->set_context($context);
@@ -85,6 +86,7 @@ if ($result !== null) {
         ["already", "info"],
         ["notfound", "warning"],
         ["invalid", "secondary"],
+        ["duplicate", "warning"],
         ["suspended", "secondary"],
         ["failed", "danger"],
     ];
@@ -125,7 +127,7 @@ if ($result !== null) {
         }
     }
 
-    foreach (["notfound", "invalid"] as $status) {
+    foreach (["notfound", "invalid", "duplicate"] as $status) {
         foreach ($result[$status] as $email) {
             $table->data[] = [
                 get_string("status{$status}", "local_massmailenrol"),
