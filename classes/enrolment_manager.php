@@ -25,7 +25,6 @@
 namespace local_massmailenrol;
 
 use context_course;
-use core_text;
 use stdClass;
 use Throwable;
 
@@ -68,7 +67,7 @@ class enrolment_manager {
         $emails = [];
 
         foreach ($parts ?: [] as $email) {
-            $email = core_text::strtolower(trim($email));
+            $email = strtolower(trim($email));
             if ($email === "") {
                 continue;
             }
@@ -131,7 +130,7 @@ class enrolment_manager {
                        AND LOWER(email) {$insql}";
 
             foreach ($DB->get_records_sql($sql, $params) as $user) {
-                $email = core_text::strtolower($user->email);
+                $email = strtolower($user->email);
                 if (!isset($usersbyemail[$email])) {
                     $usersbyemail[$email] = [];
                 }
